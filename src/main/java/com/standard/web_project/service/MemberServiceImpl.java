@@ -44,25 +44,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void registerMember(MemberVO memberVO) {
+        //VO를 DB로 전달
+        try {
+            //비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(memberVO.getUserPw());
+            memberVO.setUserPw(encodedPassword);
+            memberMapper.insertMember(memberVO);
 
-        // 사용자가 입력한 개인정보 암호화
-        String encodedPassword = passwordEncoder.encode(memberVO.getUserPw());
-        String encodedUserName = passwordEncoder.encode(memberVO.getUserName());
-        String encodedEmail = passwordEncoder.encode(memberVO.getFrontEmail() + "@" + memberVO.getBackEmail());
-        String encodedPhone = passwordEncoder.encode(memberVO.getPhone());
-        String encodedAddr = passwordEncoder.encode(memberVO.getAddr());
-        String encodedDetAddr = passwordEncoder.encode(memberVO.getDetAddr());
-
-        // 암호화된 개인정보를 VO 객체에 다시 설정
-        memberVO.setUserPw(encodedPassword);
-        memberVO.setUserName(encodedUserName);
-        memberVO.setEmail(encodedEmail);
-        memberVO.setPhone(encodedPhone);
-        memberVO.setAddr(encodedAddr);
-        memberVO.setDetAddr(encodedDetAddr);
-
-        // 3. 암호화된 정보가 담긴 VO를 DB로 전달
-        memberMapper.insertMember(memberVO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

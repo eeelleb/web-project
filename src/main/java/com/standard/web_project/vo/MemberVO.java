@@ -6,9 +6,8 @@ public class MemberVO {
     private String userPw;
     private String userName;
     private String phone;
-    private String frontEmail;
-    private String backEmail;
     private String email;
     private String addr;
     private String detAddr;
+    private String zipCode;
 }

@@ -49,6 +49,52 @@ body {
     font-size: 16px;
 }
 
+/* 중복확인 버튼: 20% */
+.userIdDup-btn {
+    flex: 0 0 20%;
+    padding: 6px 8px;
+    box-sizing: border-box;
+}
+
+/* 앞 이메일: 45% */
+.front-email {
+    flex: 0 0 45%;
+}
+
+/* @ 기호는 자동 너비 */
+.at {
+    flex: 0 0 auto;
+}
+
+/* 도메인 입력: 50% */
+.email-domain {
+    flex: 0 0 50%;
+}
+
+/* 아이디 입력: 50% */
+.userId {
+    flex: 0 0 50%;
+}
+
+.zip-row {
+    display: flex;
+    align-items: left;
+    gap: 8px;
+}
+
+/* 우편번호 인풋: 25% */
+.zip-row .zipCode {
+    flex: 0 0 25%;
+}
+
+/* 주소검색 버튼: 20% */
+.zip-row .zip-btn {
+    flex: 0 0 20%;
+    padding: 6px 8px;
+    box-sizing: border-box;
+}
+
+
 .form-group input:focus {
     outline: none;
     border-color: #007bff;

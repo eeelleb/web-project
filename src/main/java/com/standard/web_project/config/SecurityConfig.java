@@ -10,7 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import jakarta.servlet.DispatcherType;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,11 +25,11 @@ public class SecurityConfig {
             // CSRF 보호 기능 비활성화
             //.csrf((csrf) -> csrf.disable())
             
-            .authorizeHttpRequests(requests -> requests
+            .authorizeHttpRequests(auth -> auth
                 // FORWARD 타입의 요청은 모두 허용
                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                 // 로그인 없이 접근 가능한 페이지 목록
-                .requestMatchers("/", "/css/**", "/js/**", "/joinForm", "/joinAction", "/loginForm", "/loginAction").permitAll()
+                .requestMatchers("/", "/css/**", "/js/**", "/joinForm", "/loginForm", "/loginAction","/checkId").permitAll()
                 // 그 외 모든 페이지는 로그인을 해야만 접근 가능
                 .anyRequest().authenticated()
             )

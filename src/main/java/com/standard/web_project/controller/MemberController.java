@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,28 +27,31 @@ public class MemberController {
         return "joinForm";
     }
 
-    
-
     @PostMapping("/joinAction")
     @ResponseBody
-    public Map<String, String> processJoin(@ModelAttribute MemberVO memberVO) {
-        System.out.println("Received MemberVO: " + memberVO.toString());
-        return Map.of(); // 임시 반환
-    }
-    public String processJoin(MemberVO memberVO, Model model) {
-        
-        System.out.println("Received MemberVO: " + memberVO.toString());
-        //userId 중복검사
-        int userId = memberService.checkUserId(memberVO.getUserId());
+    public Map<String, Object> processJoin(MemberVO memberVO) {
+        Map <String, Object> response = new java.util.HashMap<>();
+        String message = "";
+        String result = "";
 
-        if(userId > 0) {
-            model.addAttribute("error", "이미 존재하는 아이디입니다.");
-            return "redirect:/joinForm"; // 중복된 아이디가 있을 경우 에러 표시
-        } else {
+        System.out.println("Received MemberVO: " + memberVO.toString());
+
+        try {
             memberService.registerMember(memberVO);
-            return "redirect:/loginForm"; // 가입 성공 후 로그인 폼으로 리다이렉트
+            message = "회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.";
+            result = "success";
+            response.put("redirectUrl", "/myPage");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "회원가입 중 오류가 발생했습니다.";
+            result = "fail";
         }
-        
+
+        response.put("message", message);
+        response.put("result", result);
+
+        return response;
     }
 
     // --- 로그인 & 로그아웃 관련 ---
@@ -106,4 +108,17 @@ public class MemberController {
         session.setAttribute("loginMember", updatedMember);
         return "redirect:/myPage";
     }
+
+    @GetMapping("/checkId")
+    @ResponseBody
+    public boolean idDupCheck(@RequestParam String userId) {
+        int exists = memberService.checkUserId(userId);
+        
+        if (exists > 0) {
+            return true; // 중복됨
+        } else {
+            return false; // 중복 아님
+        }
+    }
+    
 }
