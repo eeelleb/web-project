@@ -20,7 +20,8 @@
     </c:if>
 
     <form id="joinForm" action="/joinAction" method="post">
-        <div class="form-group"><label>아이디</label><input type="text" id="userId" name="userId" class="userId" required><button type="button" class="userIdDup-btn">중복확인</button></div>
+        <div class="form-group"><label>아이디</label><input type="text" id="userId" name="userId" class="userId" required></div>
+        <p id="idAlert" style="color:red; font-size: 10px; text-align: left;"></p>
         <div class="form-group"><label>비밀번호</label><input type="password" id="userPw" name="userPw" required></div>
         <div class="form-group"><label>비밀번호 확인</label><input type="password" id="userPwChk" name="userPwChk" required></div>
         <p id="pwAlert" style="color:red; font-size: 10px; text-align: left;"></p>

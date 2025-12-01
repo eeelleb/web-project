@@ -29,8 +29,9 @@ $(document).ready(function() {
 
     //아이디중복 스크립트 수정
     //아이디 중복확인
-    $ (".userIdDup-btn").on("click", function() {
-        var userId = $(".userId").val();
+    $ ("#userId").on("blur", function() {
+        var userId = $("#userId").val();
+        var alertMessage = $("#idAlert");
 
         $.ajax({
             type: "GET",
@@ -38,10 +39,12 @@ $(document).ready(function() {
             data: { userId : userId }, // 폼 데이터 직렬화
             success: function(response) {
                 if (response) {
-                    alert("" + userId + "는(은) 이미 사용 중인 아이디입니다.");
-                    focus(".userId");
+                    alertMessage.css("color","red");
+                    alertMessage.text("" + userId + "는(은) 이미 사용 중인 아이디입니다.");
+                    focus("#userId");
                 } else{
-                    alert("" + userId + "는(은) 사용 가능한 아이디입니다.");
+                    alertMessage.css("color","green");
+                    alertMessage.text("" + userId + "는(은) 사용 가능한 아이디입니다.");
                 }
             },
             error: function(error) {

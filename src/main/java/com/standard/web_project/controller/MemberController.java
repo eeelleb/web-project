@@ -67,7 +67,8 @@ public class MemberController {
             HttpSession session, Model model) {
             
         MemberVO loginMember = memberService.loginMember(userId, userPw);
-        
+        System.out.println("loginMember : " + loginMember);
+
         if (loginMember != null) {
             // 로그인 성공 시, 세션에 회원 정보를 저장합니다.
             session.setAttribute("loginMember", loginMember);

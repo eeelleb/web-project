@@ -19,14 +19,14 @@
             </script>
         </c:if>
 
-        <form action="/loginAction" method="post">
+        <form id="loginForm" action="/loginAction" method="post">
             <div class="form-group">
                 <label>아이디</label>
-                <input type="text" name="userId" required>
+                <input type="text" id="userId" name="userId" required>
             </div>
             <div class="form-group">
                 <label>비밀번호</label>
-                <input type="password" name="userPw" required>
+                <input type="password" id="userPw" name="userPw" required>
             </div>
             <button type="submit" class="btn">로그인</button>
         </form>
@@ -36,5 +36,6 @@
         </div>
     </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="/js/login.js"></script>
 </body>
 </html>
