@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,39 +65,13 @@ public class MemberController {
     public String showLoginForm() {
         return "loginForm";
     }
-
-    @PostMapping("/loginAction")
-    @ResponseBody
-    public Map<String, Object> processLogin(
-            @RequestParam("userId") String userId,
-            @RequestParam("userPw") String userPw,
-            HttpSession session) {
-
-        Map<String, Object> result = new HashMap<>();
-        MemberVO loginMember = memberService.loginMember(userId, userPw);
-
-        if (loginMember != null) {
-            session.setAttribute("loginMember", loginMember);
-            result.put("status", "success");
-            result.put("redirectUrl", "/myPage");
-        } else {
-            result.put("status", "fail");
-            result.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
-        }
-        return result;
-    }
-
-
-    @GetMapping("/logout")
-    public String processLogout(HttpSession session) {
-        session.invalidate(); // 세션을 무효화하여 로그아웃 처리
-        return "redirect:/loginForm";
-    }
-
+    
     // --- 마이페이지 관련 (단 하나의 메소드만 남깁니다) ---
+    //SecurityConfig 표준에 맞추서 수정 @AuthenticiatedPrincipal - 사용자 인증
     @GetMapping("/myPage")
-    public String showMyPage(HttpSession session, Model model) {
-        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+    public String showMyPage( Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String userId = userDetails.getUsername();
+        MemberVO loginMember =  memberService.getMemberById(userId);
         
         if (loginMember == null) {
             // 비로그인 상태라면 로그인 폼으로 보냅니다.
@@ -109,10 +85,10 @@ public class MemberController {
 
     @PostMapping("/updateAction")
     @ResponseBody
-    public Map<String, Object> updateMember(MemberVO memberVO, HttpSession session) {
+    public Map<String, Object> updateMember(MemberVO memberVO, @AuthenticationPrincipal UserDetails userDetails) {
         Map<String, Object> result = new HashMap<>();
-
-        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        String userId = userDetails.getUsername();
+        MemberVO loginMember =  memberService.getMemberById(userId);
         if (loginMember == null) {
             result.put("status", "fail");
             result.put("message", "로그인이 필요합니다.");

@@ -25,27 +25,26 @@
         <div class="form-group">
             <label>이름</label>
             <input type="text" name="userName"
-                   value="${sessionScope.loginMember.userName}" required>
+            value="${sessionScope.loginMember.userName}" required>
         </div>
 
         <div class="form-group">
             <label>전화번호</label>
             <input type="text" name="phone"
-                   value="${sessionScope.loginMember.phone}">
+                value="${sessionScope.loginMember.phone}">
         </div>
 
         <div class="form-group">
             <label>이메일</label>
             <input type="email" name="email"
-                   value="${sessionScope.loginMember.email}">
+            value="${sessionScope.loginMember.email}">
         </div>
 
-        <!-- ✅ 우편번호 + 주소검색 버튼 -->
         <div class="form-group">
             <label>우편번호</label>
             <div style="display:flex; gap:8px;">
                 <input type="text" id="zipCode" name="zipCode"
-                       value="${sessionScope.loginMember.zipCode}" readonly>
+                value="${sessionScope.loginMember.zipCode}" readonly>
                 <button type="button" class="btn"
                         onclick="execDaumPostcode()">주소 검색</button>
             </div>
@@ -54,13 +53,13 @@
         <div class="form-group">
             <label>주소</label>
             <input type="text" id="addr" name="addr"
-                   value="${sessionScope.loginMember.addr}" readonly>
+            value="${sessionScope.loginMember.addr}" readonly>
         </div>
 
         <div class="form-group">
             <label>상세주소</label>
             <input type="text" id="detAddr" name="detAddr"
-                   value="${sessionScope.loginMember.detAddr}">
+            value="${sessionScope.loginMember.detAddr}">
         </div>
 
         <button type="submit" class="btn">정보 수정</button>
