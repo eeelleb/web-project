@@ -35,7 +35,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form                     // Spring Security의 기본 로그인 폼 대신
                 .loginPage("/loginForm")                // 커스텀 로그인 페이지 주소
-                .loginProcessingUrl("/springSecurityLogin")   // 로그인 처리를 할 URL (이 URL은 Spring Security가 사용)
+                .loginProcessingUrl("/loginAction")   // 로그인 처리를 할 URL (이 URL은 Spring Security가 사용)
                 .usernameParameter("userId")          // 로그인 폼의 아이디 input name
                 .passwordParameter("userPw")          // 로그인 폼의 비밀번호 input name
                 .defaultSuccessUrl("/myPage", true) // 로그인 성공 시 강제로 이동시킬 페이지
