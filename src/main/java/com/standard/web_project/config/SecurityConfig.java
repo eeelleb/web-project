@@ -29,13 +29,13 @@ public class SecurityConfig {
                 // FORWARD 타입의 요청은 모두 허용
                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                 // 로그인 없이 접근 가능한 페이지 목록
-                .requestMatchers("/", "/css/**", "/js/**", "/joinForm", "/loginForm", "/joinAction","/checkId").permitAll()
+                .requestMatchers("/", "/css/**", "/js/**", "/joinForm", "/loginForm", "/joinAction","/checkId", "/loginAction","/myPage", "/updateAction", "/logout").permitAll()
                 // 그 외 모든 페이지는 로그인을 해야만 접근 가능
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form // Spring Security의 기본 로그인 폼 대신
                 .loginPage("/loginForm")              // 커스텀 로그인 페이지 주소
-                .loginProcessingUrl("/loginAction")   // 로그인 처리를 할 URL (이 URL은 Spring Security가 사용)
+                .loginProcessingUrl("/springSecurityLogin")   // 로그인 처리를 할 URL (이 URL은 Spring Security가 사용)
                 .usernameParameter("userId")          // 로그인 폼의 아이디 input name
                 .passwordParameter("userPw")          // 로그인 폼의 비밀번호 input name
                 .defaultSuccessUrl("/myPage", true) // 로그인 성공 시 강제로 이동시킬 페이지

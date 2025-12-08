@@ -1,5 +1,7 @@
 $(document).ready(function() {
-    $("#loginForm").on("submit", function() {
+    $("#loginForm").on("submit", function(e) {
+        e.preventDefault();  // ★ 이게 있어야 폼이 브라우저 기본 submit로 안 나갑니다.
+
         var userId = $("#userId").val();
         var userPw = $("#userPw").val();
         
@@ -13,11 +15,10 @@ $(document).ready(function() {
             url: "/loginAction",
             data: { userId: userId, userPw: userPw },
             success: function(response) {
-                if (response === "success") {
-                    alert("로그인에 성공했습니다.");
-                }
-                else {
-                    alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+                if (response.status === "success") {
+                    location.href = response.redirectUrl;
+                } else {
+                    alert(response.message || "아이디 또는 비밀번호가 올바르지 않습니다.");
                 }
             },
             error: function() {

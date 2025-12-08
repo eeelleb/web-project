@@ -1,8 +1,10 @@
 package com.standard.web_project.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PasswordEncoder passwordEncoder; // SecurityConfig가 만든 암호화 기계 주입
 
     // --- 회원가입 관련 ---
     @GetMapping("/joinForm")
@@ -61,24 +65,26 @@ public class MemberController {
     }
 
     @PostMapping("/loginAction")
-    public String processLogin(
+    @ResponseBody
+    public Map<String, Object> processLogin(
             @RequestParam("userId") String userId,
             @RequestParam("userPw") String userPw,
-            HttpSession session, Model model) {
-            
+            HttpSession session) {
+
+        Map<String, Object> result = new HashMap<>();
         MemberVO loginMember = memberService.loginMember(userId, userPw);
-        System.out.println("loginMember : " + loginMember);
 
         if (loginMember != null) {
-            // 로그인 성공 시, 세션에 회원 정보를 저장합니다.
             session.setAttribute("loginMember", loginMember);
-            return "redirect:/myPage"; // 성공 시 마이페이지로 리다이렉트
+            result.put("status", "success");
+            result.put("redirectUrl", "/myPage");
         } else {
-            // 실패 시, 에러 메시지를 모델에 담아 다시 로그인 폼으로 보냅니다.
-            model.addAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
-            return "loginForm";
+            result.put("status", "fail");
+            result.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
         }
+        return result;
     }
+
 
     @GetMapping("/logout")
     public String processLogout(HttpSession session) {
@@ -102,12 +108,41 @@ public class MemberController {
     }
 
     @PostMapping("/updateAction")
-    public String processUpdate(MemberVO memberVO, HttpSession session) {
+    @ResponseBody
+    public Map<String, Object> updateMember(MemberVO memberVO, HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+
+        // 세션에서 로그인 회원 정보 가져오기
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            result.put("status", "fail");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        // userId는 세션 기준으로 강제 고정 (폼에서 넘어온 값과 맞추기)
+        memberVO.setUserId(loginMember.getUserId());
+
+        // 비밀번호가 입력된 경우에만 암호화해서 변경
+        if (memberVO.getUserPw() != null && !memberVO.getUserPw().isBlank()) {
+            String encodedPw = passwordEncoder.encode(memberVO.getUserPw());
+            memberVO.setUserPw(encodedPw);
+        } else {
+            // 비밀번호 미변경: DB에 반영하지 않도록 서비스/매퍼에서 처리하거나
+            // 여기서 기존 비번을 유지하는 식으로 구현
+            memberVO.setUserPw(null);
+        }
+
+        // 서비스에 업데이트 요청
         memberService.updateMember(memberVO);
-        // 세션 정보도 최신으로 갱신해 줍니다.
-        MemberVO updatedMember = memberService.getMemberById(memberVO.getUserId());
-        session.setAttribute("loginMember", updatedMember);
-        return "redirect:/myPage";
+
+        // 세션 정보도 최신 값으로 갱신
+        MemberVO updated = memberService.getMemberById(loginMember.getUserId());
+        session.setAttribute("loginMember", updated);
+
+        result.put("status", "success");
+        result.put("message", "회원 정보가 수정되었습니다.");
+        return result;
     }
 
     @GetMapping("/checkId")
