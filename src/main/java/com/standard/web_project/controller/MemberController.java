@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.standard.web_project.service.MemberService;
 import com.standard.web_project.vo.MemberVO;
 
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class MemberController {
 
@@ -108,10 +106,6 @@ public class MemberController {
 
         // 실제 DB 업데이트 (mapper/서비스 로직에 맞게 수정)
         memberService.updateMember(memberVO);
-
-        // 최신 정보로 세션 갱신
-        MemberVO updated = memberService.getMemberById(loginMember.getUserId());
-        session.setAttribute("loginMember", updated);
 
         result.put("status", "success");
         result.put("message", "회원 정보가 수정되었습니다.");
