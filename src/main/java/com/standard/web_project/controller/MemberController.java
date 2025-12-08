@@ -112,7 +112,6 @@ public class MemberController {
     public Map<String, Object> updateMember(MemberVO memberVO, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
 
-        // 세션에서 로그인 회원 정보 가져오기
         MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
         if (loginMember == null) {
             result.put("status", "fail");
@@ -120,23 +119,21 @@ public class MemberController {
             return result;
         }
 
-        // userId는 세션 기준으로 강제 고정 (폼에서 넘어온 값과 맞추기)
+        // 세션 기준으로 userId 고정
         memberVO.setUserId(loginMember.getUserId());
 
-        // 비밀번호가 입력된 경우에만 암호화해서 변경
+        // 비밀번호 변경이 있을 때만 암호화 처리
         if (memberVO.getUserPw() != null && !memberVO.getUserPw().isBlank()) {
             String encodedPw = passwordEncoder.encode(memberVO.getUserPw());
             memberVO.setUserPw(encodedPw);
         } else {
-            // 비밀번호 미변경: DB에 반영하지 않도록 서비스/매퍼에서 처리하거나
-            // 여기서 기존 비번을 유지하는 식으로 구현
-            memberVO.setUserPw(null);
+            memberVO.setUserPw(null); // 혹은 서비스/매퍼에서 비번 필드 제외 처리
         }
 
-        // 서비스에 업데이트 요청
+        // 실제 DB 업데이트 (mapper/서비스 로직에 맞게 수정)
         memberService.updateMember(memberVO);
 
-        // 세션 정보도 최신 값으로 갱신
+        // 최신 정보로 세션 갱신
         MemberVO updated = memberService.getMemberById(loginMember.getUserId());
         session.setAttribute("loginMember", updated);
 
